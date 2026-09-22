@@ -6,55 +6,290 @@
 <meta name="theme-color" content="#15171a">
 <link rel="manifest" href="manifest.webmanifest">
 <title>إرسال رقم</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:#17191c;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
-button,input{font:inherit}.screen{max-width:600px;margin:auto;min-height:100vh;padding:20px;display:flex;flex-direction:column;justify-content:center}
-.card{background:white;border:1px solid #e5e8ec;border-radius:22px;padding:24px;box-shadow:0 8px 30px #0000000b}
-h1{margin:0 0 6px;font-size:30px}.sub{color:#6f7782;font-size:14px;margin-bottom:24px}
-.statusbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:10px 12px;border-radius:12px;background:#f7f8fa}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:7px}.online{background:#0b8b4b}.offline{background:#c3312b}
-input{width:100%;height:74px;border:2px solid #d7dce2;border-radius:16px;padding:0 18px;font-size:28px;direction:ltr;text-align:center;outline:none}
-input:focus{border-color:#17191c}.send{width:100%;height:62px;margin-top:12px;border:0;border-radius:15px;background:#15171a;color:#fff;font-size:20px;font-weight:850}
-.send:disabled{opacity:.5}.msg{margin-top:13px;padding:12px;border-radius:12px;text-align:center;font-weight:800;display:none}.msg.ok{display:block;background:#eaf8f0;color:#08783e}.msg.warn{display:block;background:#fff7df;color:#8a5a00}.msg.bad{display:block;background:#fff0ef;color:#b3261e}
-.history{margin-top:20px;border-top:1px solid #eceff2;padding-top:14px}.history h3{margin:0 0 10px;font-size:15px}.row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f0f1f2;direction:ltr}.tag{font-size:12px;font-weight:800}.tag.ok{color:#08783e}.tag.warn{color:#8a5a00}.tag.bad{color:#b3261e}.tag.wait{color:#2457d6}
-.login{max-width:430px;margin:auto;min-height:100vh;padding:20px;display:flex;align-items:center}.login .card{width:100%}.login input{font-size:17px;height:54px;text-align:left;margin-top:9px}.login button{width:100%;height:52px;margin-top:12px;border:0;border-radius:12px;background:#15171a;color:#fff;font-weight:800}
-.hidden{display:none!important}.small{font-size:12px;color:#6f7782;margin-top:10px}.logout{border:0;background:transparent;text-decoration:underline;color:#6f7782}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#f3f5f7;
+  color:#17191c;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif
+}
+
+button,input{font:inherit}
+
+.screen{
+  max-width:600px;
+  margin:auto;
+  min-height:100vh;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center
+}
+
+.card{
+  background:white;
+  border:1px solid #e5e8ec;
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 8px 30px #0000000b
+}
+
+h1{
+  margin:0 0 6px;
+  font-size:30px
+}
+
+.sub{
+  color:#6f7782;
+  font-size:14px;
+  margin-bottom:24px
+}
+
+.statusbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#f7f8fa
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+  margin-left:7px
+}
+
+.online{background:#0b8b4b}
+.offline{background:#c3312b}
+
+input{
+  width:100%;
+  height:74px;
+  border:2px solid #d7dce2;
+  border-radius:16px;
+  padding:0 18px;
+  font-size:28px;
+  direction:ltr;
+  text-align:center;
+  outline:none
+}
+
+input:focus{
+  border-color:#17191c
+}
+
+.send{
+  width:100%;
+  height:62px;
+  margin-top:12px;
+  border:0;
+  border-radius:15px;
+  background:#15171a;
+  color:#fff;
+  font-size:20px;
+  font-weight:850
+}
+
+.send:disabled{
+  opacity:.5
+}
+
+.msg{
+  margin-top:13px;
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:800;
+  display:none
+}
+
+.msg.ok{
+  display:block;
+  background:#eaf8f0;
+  color:#08783e
+}
+
+.msg.warn{
+  display:block;
+  background:#fff7df;
+  color:#8a5a00
+}
+
+.msg.bad{
+  display:block;
+  background:#fff0ef;
+  color:#b3261e
+}
+
+.history{
+  margin-top:20px;
+  border-top:1px solid #eceff2;
+  padding-top:14px
+}
+
+.history h3{
+  margin:0 0 10px;
+  font-size:15px
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:9px 0;
+  border-bottom:1px solid #f0f1f2;
+  direction:ltr
+}
+
+.tag{
+  font-size:12px;
+  font-weight:800
+}
+
+.tag.ok{color:#08783e}
+.tag.warn{color:#8a5a00}
+.tag.bad{color:#b3261e}
+.tag.wait{color:#2457d6}
+
+.login{
+  max-width:430px;
+  margin:auto;
+  min-height:100vh;
+  padding:20px;
+  display:flex;
+  align-items:center
+}
+
+.login .card{
+  width:100%
+}
+
+.login input{
+  font-size:17px;
+  height:54px;
+  text-align:left;
+  margin-top:9px
+}
+
+.login button{
+  width:100%;
+  height:52px;
+  margin-top:12px;
+  border:0;
+  border-radius:12px;
+  background:#15171a;
+  color:#fff;
+  font-weight:800
+}
+
+.hidden{
+  display:none!important
+}
+
+.small{
+  font-size:12px;
+  color:#6f7782;
+  margin-top:10px
+}
 </style>
 </head>
+
 <body>
+
 <section id="loginScreen" class="login">
   <div class="card">
     <h1>دخول الجهاز</h1>
-    <div class="sub">يتم تسجيل الدخول مرة واحدة فقط على كل جهاز.</div>
-    <input id="email" type="email" placeholder="Email" autocomplete="username">
-    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+
+    <div class="sub">
+      يتم تسجيل الدخول مرة واحدة فقط على كل جهاز.
+    </div>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+      autocomplete="username"
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
     <button id="loginBtn">دخول</button>
+
     <div id="loginMsg" class="msg"></div>
   </div>
 </section>
 
+
 <section id="senderScreen" class="screen hidden">
   <div class="card">
+
     <div class="statusbar">
-      <span><span id="netDot" class="dot online"></span><b id="netText">متصل</b></span>
-      <span><b id="deviceName">Tablet</b></span>
+      <span>
+        <span id="netDot" class="dot online"></span>
+        <b id="netText">متصل</b>
+      </span>
+
+      <span>
+        <b id="deviceName">Tablet</b>
+      </span>
     </div>
+
     <h1>إرسال الرقم</h1>
-    <div class="sub">أدخل No أو رقم بطاقة التعريف ثم اضغط إرسال.</div>
-    <input id="identifier" inputmode="text" autocomplete="off" autofocus placeholder="20393">
-    <button id="sendBtn" class="send">إرسال</button>
+
+    <div class="sub">
+      أدخل No أو رقم بطاقة التعريف ثم اضغط إرسال.
+    </div>
+
+    <input
+      id="identifier"
+      inputmode="text"
+      autocomplete="off"
+      autofocus
+      placeholder="20393"
+    >
+
+    <button id="sendBtn" class="send">
+      إرسال
+    </button>
+
     <div id="sendMsg" class="msg"></div>
-    <div class="small">إذا انقطع الإنترنت، سيبقى الرقم في قائمة الانتظار ويُرسل تلقائياً عند عودة الاتصال.</div>
+
+    <div class="small">
+      إذا انقطع الإنترنت، سيبقى الرقم في قائمة الانتظار ويُرسل تلقائياً عند عودة الاتصال.
+    </div>
 
     <div class="history">
       <h3>آخر الإرسالات</h3>
       <div id="history"></div>
     </div>
+
   </div>
 </section>
 
+
 <script src="config.js"></script>
 <script src="api.js"></script>
-<script src="sender.js"></script><script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}</script>
+<script src="sender.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () =>
+    navigator.serviceWorker.register("sw.js").catch(() => {})
+  );
+}
+</script>
+
 </body>
 </html>
