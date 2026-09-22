@@ -1,0 +1,9 @@
+{
+  "name": "Registration Sender",
+  "short_name": "Sender",
+  "start_url": "sender.html",
+  "display": "standalone",
+  "background_color": "#f3f5f7",
+  "theme_color": "#15171a",
+  "icons": []
+}

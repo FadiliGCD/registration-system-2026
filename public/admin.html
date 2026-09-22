@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نظام التسجيل - الإدارة</title>
+<style>
+:root{
+  --bg:#f3f5f7;--card:#fff;--text:#17191c;--muted:#6f7782;--line:#e5e8ec;
+  --dark:#15171a;--ok:#08783e;--okbg:#eaf8f0;--bad:#b3261e;--badbg:#fff0ef;
+  --warn:#8a5a00;--warnbg:#fff7df;--blue:#2457d6;--bluebg:#eef3ff
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:1360px;margin:auto;padding:22px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+h1{margin:0;font-size:28px}.sub{color:var(--muted);font-size:14px;margin-top:5px}
+.reset{border:1px solid #efc4c0;background:var(--badbg);color:var(--bad);padding:11px 15px;border-radius:12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px}
+.stat,.card,.list,.historybox,.summaryCard{background:#fff;border:1px solid var(--line);border-radius:16px}
+.stat{padding:15px}.stat small{color:var(--muted)}.stat b{display:block;font-size:30px;margin-top:4px}
+.historybox{padding:14px;margin-bottom:14px}
+.historyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}
+.historytitle{font-weight:850}.historyactions{display:flex;gap:7px;flex-wrap:wrap}
+.smallbtn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:13px;font-weight:750}
+.historychips{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;min-height:35px;align-items:center}
+.chip{flex:0 0 auto;border-radius:999px;padding:7px 10px;font-size:13px;font-weight:750;border:1px solid var(--line);direction:ltr}
+.chip.ok{background:var(--okbg);color:var(--ok);border-color:#bfe6cf}
+.chip.dup{background:var(--warnbg);color:var(--warn);border-color:#f0d897}
+.chip.bad{background:var(--badbg);color:var(--bad);border-color:#f0c7c4}
+.nohistory{color:var(--muted);font-size:13px}
+.card{padding:24px;margin-bottom:15px}.card h2{margin:0 0 6px}.hint{color:var(--muted);font-size:14px;margin-bottom:14px}
+.entryrow{display:grid;grid-template-columns:1fr 155px;gap:10px;align-items:stretch}
+.entry{min-height:72px;max-height:160px;resize:vertical;border:2px solid #d7dce2;border-radius:14px;padding:14px 16px;font-size:19px;outline:none;direction:ltr;text-align:left}
+.entry:focus{border-color:#333}.go{border:0;background:var(--dark);color:#fff;border-radius:14px;font-weight:850;font-size:17px}
+.examples{font-size:12px;color:var(--muted);margin-top:8px;direction:rtl}
+.msg{display:none;margin-top:12px;padding:11px 13px;border-radius:10px;font-weight:700;white-space:pre-line}
+.msg.ok{display:block;background:var(--okbg);color:var(--ok)}.msg.bad{display:block;background:var(--badbg);color:var(--bad)}.msg.warn{display:block;background:var(--warnbg);color:var(--warn)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+.tab{border:1px solid var(--line);background:#fff;padding:10px 15px;border-radius:11px;font-weight:800}
+.tab.active{background:var(--dark);color:#fff}.panel{display:none}.panel.active{display:block}
+.list{overflow:hidden}.controls{display:grid;grid-template-columns:1fr 205px 205px 205px;gap:8px;padding:13px;border-bottom:1px solid var(--line)}
+.search,select{border:1px solid #d8dde3;border-radius:10px;padding:10px 12px;background:#fff;outline:none}
+.tablewrap{overflow:auto;max-height:61vh}
+table{border-collapse:collapse;width:100%;min-width:1420px;font-size:13px}
+th,td{padding:10px 11px;border-bottom:1px solid #edf0f2;text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:#f8f9fa;z-index:2;font-weight:850}.nm{font-weight:750}.missing{color:#999;font-style:italic}
+.empty{text-align:center;padding:42px;color:var(--muted)}.status{padding:11px 14px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+.summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.summaryCard{overflow:hidden}
+.summaryHead{display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-bottom:1px solid var(--line)}
+.summaryHead h3{margin:0;font-size:18px}.summaryMeta{color:var(--muted);font-size:12px}
+.summaryTable{min-width:0;width:100%;font-size:13px}.summaryTable th,.summaryTable td{text-align:right}
+.summaryTable th{position:static}.summaryScroll{max-height:410px;overflow:auto}
+.schoolCard{grid-column:1/-1}.schoolEmpty{padding:30px;text-align:center;color:var(--muted)}
+.copytoast{position:fixed;left:20px;bottom:20px;background:#181818;color:#fff;border-radius:10px;padding:10px 13px;font-size:13px;opacity:0;pointer-events:none;transition:.2s}
+.copytoast.show{opacity:1}
+
+
+.hierBox{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.hierTop{padding:14px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:center}
+.hierTop label{font-weight:850;font-size:14px}
+.hierTop select,.hierTop input{width:100%;border:1px solid #d8dde3;border-radius:10px;padding:10px 12px;background:#fff}
+.hierNote{padding:10px 14px;color:var(--muted);font-size:12px;border-bottom:1px solid var(--line)}
+.hierContent{padding:14px}
+.groupCard{border:1px solid var(--line);border-radius:13px;margin-bottom:10px;overflow:hidden;background:#fff}
+.groupHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;background:#fafafa;cursor:pointer}
+.groupHeader:hover{background:#f5f6f7}
+.groupTitle{font-weight:850}.groupCount{font-weight:850;font-size:13px;background:#eef1f4;padding:5px 9px;border-radius:999px}
+.groupBody{display:none;padding:12px 14px;border-top:1px solid var(--line)}
+.groupCard.open>.groupBody{display:block}
+.chev{font-size:12px;color:var(--muted);margin-left:6px}
+.subSection{margin:9px 0 15px}
+.subTitle{font-size:14px;font-weight:850;margin:0 0 7px}
+.miniGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.miniCard{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+.miniCard .nm2{font-weight:800;font-size:13px}.miniCard .ct2{color:var(--muted);font-size:12px;margin-top:4px}
+.peopleBlock{margin-top:10px;border-top:1px dashed #d8dce1;padding-top:10px}
+.peopleBlock summary{cursor:pointer;font-weight:800;font-size:13px}
+.peopleList{margin-top:8px;overflow:auto}
+.peopleList table{min-width:900px;font-size:12px}
+.peopleList th,.peopleList td{padding:8px 9px}
+.hierEmpty{padding:35px;text-align:center;color:var(--muted)}
+@media(max-width:850px){
+  .hierTop{grid-template-columns:1fr}
+  .miniGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .miniGrid{grid-template-columns:1fr}
+}
+
+.reportBuilder{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.reportSettings{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.reportField label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+.reportField input,.reportField select{width:100%;border:1px solid #d8dde3;border-radius:10px;padding:10px 12px;background:#fff;outline:none}
+.filterGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.filterBox{border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#fff}
+.filterHead{padding:10px 11px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.filterHead b{font-size:14px}.filterActions{display:flex;gap:5px}
+.microbtn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:4px 7px;font-size:11px;font-weight:750}
+.checkList{max-height:190px;overflow:auto;padding:8px}
+.checkitem{display:flex;align-items:center;gap:7px;padding:6px 5px;border-radius:7px;font-size:13px;cursor:pointer}
+.checkitem:hover{background:#f7f8fa}.checkitem input{width:15px;height:15px}
+.filterNote{padding:20px 12px;color:var(--muted);font-size:13px;text-align:center;line-height:1.7}
+.columnsBox{border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:14px}
+.columnsHead{font-weight:850;margin-bottom:9px}.columnsGrid{display:flex;flex-wrap:wrap;gap:8px 13px}
+.colcheck{display:flex;align-items:center;gap:6px;font-size:13px}.colcheck input{width:15px;height:15px}
+.reportActions{display:flex;gap:9px;flex-wrap:wrap}
+.previewBtn,.printBtn{border:0;border-radius:11px;padding:11px 16px;font-weight:850}
+.previewBtn{background:#eceff3;color:#222}.printBtn{background:var(--dark);color:#fff}
+.reportPreview{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;overflow:auto}
+.reportPaper{background:#fff;min-width:850px;color:#111}
+.reportPaper h2{text-align:center;margin:0 0 4px;font-size:22px}
+.reportPaper .reportSub{text-align:center;color:#555;font-size:12px;margin-bottom:13px}
+.reportSummaryLine{display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-bottom:13px;font-size:13px;font-weight:750}
+.reportTable{width:100%;min-width:0;border-collapse:collapse;font-size:11px}
+.reportTable th,.reportTable td{border:1px solid #bbb;padding:6px 7px;text-align:right;white-space:normal}
+.reportTable th{position:static;background:#f0f0f0}
+.reportEmpty{text-align:center;padding:35px;color:var(--muted)}
+.reportHint{font-size:12px;color:var(--muted);margin-top:9px}
+
+@media(max-width:850px){
+  .app{padding:12px}.stats{gap:6px}.stat{padding:10px}.stat b{font-size:22px}
+  .entryrow{grid-template-columns:1fr}.go{height:52px}.controls{grid-template-columns:1fr}
+  .card{padding:17px}.summaryGrid{grid-template-columns:1fr}.schoolCard{grid-column:auto}
+  .historyhead{align-items:flex-start;flex-direction:column}.reportSettings{grid-template-columns:1fr}.filterGrid{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<style>
+.cloudLogin{position:fixed;inset:0;background:#f3f5f7;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.cloudLogin.hidden{display:none}
+.cloudLoginCard{background:#fff;border:1px solid #e5e8ec;border-radius:18px;padding:24px;width:min(430px,100%)}
+.cloudLoginCard input{width:100%;height:52px;border:1px solid #d8dde3;border-radius:11px;padding:0 13px;margin-top:9px;direction:ltr}
+.cloudLoginCard button{width:100%;height:50px;border:0;border-radius:11px;background:#15171a;color:#fff;font-weight:800;margin-top:11px}
+.cloudLoginMsg{margin-top:10px;color:#b3261e;font-weight:700;font-size:13px}
+.cloudActions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.logoutCloud{border:1px solid #d8dde3;background:#fff;border-radius:10px;padding:8px 11px;font-weight:750}
+#cloudStatus.ok{color:#08783e}#cloudStatus.bad{color:#b3261e}
+</style>
+
+</head>
+<body>
+
+<div id="cloudLogin" class="cloudLogin">
+  <div class="cloudLoginCard">
+    <h2 style="margin:0 0 5px">دخول الإدارة</h2>
+    <div class="sub">حساب الإدارة فقط.</div>
+    <input id="adminEmail" type="email" placeholder="Email" autocomplete="username">
+    <input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="adminLoginBtn">دخول</button>
+    <div id="adminLoginMsg" class="cloudLoginMsg"></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="top">
+    <div><h1>نظام التسجيل</h1><div class="sub">متصل بالنظام المركزي — <span id="cloudStatus">جاري الاتصال...</span></div></div>
+    <div class="cloudActions"><button id="cloudLogout" class="logoutCloud">خروج</button><button id="reset" class="reset">إعادة الضبط</button></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>الإجمالي</small><b id="tot">0</b></div>
+    <div class="stat"><small>تم تسجيلهم</small><b id="done">0</b></div>
+    <div class="stat"><small>المتبقي</small><b id="left">0</b></div>
+  </div>
+
+  <div class="historybox">
+    <div class="historyhead">
+      <div>
+        <div class="historytitle">آخر الأرقام التي تم إدخالها</div>
+        <div class="sub">الأحدث يظهر أولاً — محفوظة فقط في هذه الجلسة</div>
+      </div>
+      <div class="historyactions">
+        <button id="copyHistory" class="smallbtn">نسخ كل السجل</button>
+        <button id="copyRegistered" class="smallbtn">نسخ المسجلين فقط</button>
+        <button id="clearHistory" class="smallbtn">مسح السجل</button>
+      </div>
+    </div>
+    <div id="historyChips" class="historychips"></div>
+  </div>
+
+  <div class="card">
+    <h2>تسجيل شخص أو مجموعة</h2>
+    <div class="hint">اكتب أو الصق <b>No</b> أو <b>رقم بطاقة التعريف</b>. يمكنك إدخال عدة قيم مرة واحدة.</div>
+    <div class="entryrow">
+      <textarea id="inp" class="entry" autofocus autocomplete="off" placeholder="مثال:
+1
+SH7256
+28, SH9912, 41"></textarea>
+      <button id="go" class="go">تسجيل الكل</button>
+    </div>
+    <div class="examples">الفواصل المقبولة: مسافة، Enter، فاصلة ( , )، فاصلة عربية (،)، ; أو Tab. &nbsp; | &nbsp; Ctrl/Cmd + Enter = تسجيل سريع</div>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="remain">القائمة المتبقية</button>
+    <button class="tab" data-tab="reg">المسجلون</button>
+    <button class="tab" data-tab="summary">الإحصائيات حسب المجموعات</button>
+    <button class="tab" data-tab="report">إنشاء تقرير / PDF</button>
+  </div>
+
+  <section id="remain" class="panel active">
+    <div class="hierBox">
+      <div class="hierTop">
+        <label for="hierMode">ابحث ب:</label>
+        <select id="hierMode">
+          <option value="school" id="hierSchoolOption">المدرسة</option>
+          <option value="assigned">المكلف</option>
+          <option value="district">الدائرة</option>
+          <option value="office">المكتب</option>
+        </select>
+      </div>
+
+      <div class="hierNote">
+        يعرض هذا القسم <b>المتبقين فقط</b>. اضغط على أي مجموعة لفتح التفاصيل، ثم يمكنك فتح قائمة الأشخاص داخل المجموعة.
+      </div>
+
+      <div class="hierTop">
+        <label for="hierSearch">بحث داخل النتائج:</label>
+        <input id="hierSearch" placeholder="اكتب الاسم أو No أو رقم البطاقة أو اسم المدرسة أو المكلف أو رقم الدائرة أو المكتب">
+      </div>
+
+      <div id="hierContent" class="hierContent"></div>
+    </div>
+  </section>
+
+  <section id="reg" class="panel"><div class="list">
+    <div class="controls" style="grid-template-columns:1fr">
+      <input id="rq" class="search" placeholder="بحث داخل المسجلين">
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr>
+        <th>وقت التسجيل</th><th>القيمة المدخلة</th><th>No</th><th>الاسم الشخصي</th><th>الاسم العائلي</th>
+        <th>رقم البطاقة</th><th>الدائرة</th><th>مكتب</th><th>المدرسة</th><th>المؤطر</th><th>المكلف</th>
+      </tr></thead>
+      <tbody id="gb"></tbody>
+    </table></div>
+    <div id="gs" class="status"></div>
+  </div></section>
+
+  <section id="summary" class="panel">
+    <div class="summaryGrid">
+      <div class="summaryCard">
+        <div class="summaryHead"><h3>حسب المكلف</h3><span id="assignedMeta" class="summaryMeta"></span></div>
+        <div class="summaryScroll"><table class="summaryTable">
+          <thead><tr><th>المكلف</th><th>الإجمالي</th><th>مسجل</th><th>متبقي</th></tr></thead>
+          <tbody id="assignedSummary"></tbody>
+        </table></div>
+      </div>
+
+      <div class="summaryCard">
+        <div class="summaryHead"><h3>حسب الدائرة</h3><span id="districtMeta" class="summaryMeta"></span></div>
+        <div class="summaryScroll"><table class="summaryTable">
+          <thead><tr><th>الدائرة</th><th>الإجمالي</th><th>مسجل</th><th>متبقي</th></tr></thead>
+          <tbody id="districtSummary"></tbody>
+        </table></div>
+      </div>
+
+      <div class="summaryCard">
+        <div class="summaryHead"><h3>حسب المكتب</h3><span id="officeMeta" class="summaryMeta"></span></div>
+        <div class="summaryScroll"><table class="summaryTable">
+          <thead><tr><th>المكتب</th><th>الإجمالي</th><th>مسجل</th><th>متبقي</th></tr></thead>
+          <tbody id="officeSummary"></tbody>
+        </table></div>
+      </div>
+
+      <div class="summaryCard">
+        <div class="summaryHead"><h3>حسب المدرسة</h3><span class="summaryMeta">مراكز الاقتراع</span></div>
+        <div id="schoolSummary"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="report" class="panel">
+    <div class="reportBuilder">
+      <div class="reportSettings">
+        <div class="reportField">
+          <label>عنوان التقرير</label>
+          <input id="reportTitle" value="تقرير النتائج">
+        </div>
+        <div class="reportField">
+          <label>نوع القائمة</label>
+          <select id="reportType">
+            <option value="remaining">المتبقون فقط</option>
+            <option value="registered">المسجلون فقط</option>
+            <option value="all">الجميع</option>
+          </select>
+        </div>
+        <div class="reportField">
+          <label>ترتيب التقرير</label>
+          <select id="reportSort">
+            <option value="no">حسب No</option>
+            <option value="assigned">حسب المكلف</option>
+            <option value="district">حسب الدائرة</option>
+            <option value="office">حسب المكتب</option>
+            <option value="id">حسب رقم البطاقة</option>
+            <option value="school" id="reportSchoolSort">حسب المدرسة</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filterGrid">
+        <div class="filterBox">
+          <div class="filterHead"><b>المكلف</b><div class="filterActions">
+            <button class="microbtn reportSelectAll" data-target="reportAssigned">الكل</button>
+            <button class="microbtn reportClearAll" data-target="reportAssigned">مسح</button>
+          </div></div>
+          <div id="reportAssigned" class="checkList"></div>
+        </div>
+
+        <div class="filterBox">
+          <div class="filterHead"><b>الدائرة</b><div class="filterActions">
+            <button class="microbtn reportSelectAll" data-target="reportDistrict">الكل</button>
+            <button class="microbtn reportClearAll" data-target="reportDistrict">مسح</button>
+          </div></div>
+          <div id="reportDistrict" class="checkList"></div>
+        </div>
+
+        <div class="filterBox">
+          <div class="filterHead"><b>المكتب</b><div class="filterActions">
+            <button class="microbtn reportSelectAll" data-target="reportOffice">الكل</button>
+            <button class="microbtn reportClearAll" data-target="reportOffice">مسح</button>
+          </div></div>
+          <div id="reportOffice" class="checkList"></div>
+        </div>
+
+        <div class="filterBox">
+          <div class="filterHead"><b>المدرسة</b><div class="filterActions">
+            <button class="microbtn reportSelectAll" data-target="reportSchool">الكل</button>
+            <button class="microbtn reportClearAll" data-target="reportSchool">مسح</button>
+          </div></div>
+          <div id="reportSchool" class="checkList"></div>
+        </div>
+      </div>
+
+      <div class="columnsBox">
+        <div class="columnsHead">المعلومات التي تظهر في التقرير</div>
+        <div class="columnsGrid">
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="no" checked> No</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="fullName" checked> الاسم الكامل</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="id" checked> رقم بطاقة التعريف</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="district" checked> الدائرة</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="office" checked> المكتب</label>
+          <label class="colcheck"><input class="reportCol" id="reportSchoolCol" type="checkbox" value="school"> المدرسة</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="supervisor"> المؤطر</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="assigned" checked> المكلف</label>
+          <label class="colcheck"><input class="reportCol" type="checkbox" value="birth"> تاريخ الازدياد</label>
+        </div>
+      </div>
+
+      <div class="reportActions">
+        <button id="previewReport" class="previewBtn">معاينة التقرير</button>
+        <button id="printReport" class="printBtn">طباعة / حفظ PDF</button>
+      </div>
+      <div class="reportHint">داخل كل مجموعة يمكنك اختيار أكثر من قيمة. إذا لم تحدد أي قيمة في مجموعة، فسيتم اعتبارها "الكل". عند الطباعة اختر Save as PDF لحفظ الملف.</div>
+    </div>
+
+    <div class="reportPreview">
+      <div id="reportPaper" class="reportPaper"></div>
+    </div>
+  </section>
+</div>
+
+<div id="toast" class="copytoast">تم النسخ ✓</div>
+
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
